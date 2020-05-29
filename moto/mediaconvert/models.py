@@ -2,13 +2,32 @@ from __future__ import unicode_literals
 import time
 import uuid
 
-from .utils import make_arn_for_job
+from .utils import make_arn_for_job, make_arn_for_queue
 
 from boto3 import Session
 
-from moto.core import BaseBackend
+from moto.core import BaseBackend, BaseModel
 
 from moto.core import ACCOUNT_ID as DEFAULT_ACCOUNT_ID
+
+
+class Job(BaseModel):
+    def __init__(self, job_id, region_name, queue=""):
+        self.job_id = job_id
+        self.arn = make_arn_for_job(DEFAULT_ACCOUNT_ID, job_id, region_name)
+        self.created_at = str(int(round(time.time() * 1000)))
+        self.queue = queue if queue != "" else make_arn_for_queue(DEFAULT_ACCOUNT_ID, "Default", region_name)
+
+    def to_dict(self):
+        return {
+            "arn": self.arn,
+            "id": self.job_id,
+            "createdAt": self.created_at,
+            "queue": self.queue,
+        }
+
+    def __repr__(self):
+        return "<Job {0}>".format(self.job_id)
 
 
 class MediaConvertBackend(BaseBackend):
@@ -25,14 +44,8 @@ class MediaConvertBackend(BaseBackend):
 
     def put_job(self, body):
         job_id = str(uuid.uuid4())
-        job = {
-            "job": {
-                "arn": make_arn_for_job(DEFAULT_ACCOUNT_ID, job_id, self.region_name),
-                "id": job_id,
-                "createdAt": str(int(round(time.time() * 1000)))
-            }
-        }
-        self._jobs.update(jobId=job)
+        job = Job(job_id, self.region_name)
+        self._jobs[job_id] = job
         return job
 
 

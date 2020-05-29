@@ -3,20 +3,31 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.1.0
 
-workflows:
+executors:
+  vm:
+    machine: true
+
+jobs:
   build-and-deploy:
-    context: default
-    filters:
-      branches:
-        only: "feature/mediaconvert"
-    jobs:
+    machine: true
+    steps:
       - add_ssh_keys
       - run:
           name: "Setup Environment Variables"
           command: |
             echo 'export TAG="${CIRCLE_TAG:1}"' >> $BASH_ENV
       - aws-ecr/build-and-push-image:
-          repo: "447259465167.dkr.ecr.eu-west-1.amazonaws.com/aaquita/moto"
+          repo: "aaquita/moto"
           tag: "latest"
           attach-workspace: true
           workspace-root: /home/circleci/project
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build-and-deploy:
+          context: default
+          filters:
+            branches:
+              only: "feature/mediaconvert"

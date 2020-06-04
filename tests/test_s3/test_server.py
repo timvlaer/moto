@@ -40,6 +40,7 @@ def test_s3_server_bucket_create():
 
     res = test_client.get("/")
     res.data.should.contain(b"<Name>foobaz</Name>")
+    res.data.should.contain(b"<CreationDate>.+\\.[0-9]{6}+00:00</CreationDate>")
 
     res = test_client.get("/", "http://foobaz.localhost:5000/")
     res.status_code.should.equal(200)

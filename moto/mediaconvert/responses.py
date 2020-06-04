@@ -37,8 +37,6 @@ class MediaConvertResponse(BaseResponse):
 
     # DescribeEndpoints
     def endpoints(self):
-        next_token = self._get_param("NextToken")
-
         split_url = urlsplit(self.uri)
         return json.dumps({
             "endpoints": [

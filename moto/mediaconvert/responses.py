@@ -59,7 +59,7 @@ class MediaConvertResponse(BaseResponse):
 
         sqs_backend = sqs_backends[self.region]
         sqs_backend.create_queue(MEDIACONVERT_UPDATES_QUEUE_NAME)
-        sqs_backend.send_message(MEDIACONVERT_UPDATES_QUEUE_NAME, json.dumps(self.create_state_change_msg(job)))
+        sqs_backend.send_message(MEDIACONVERT_UPDATES_QUEUE_NAME, json.dumps(self.create_state_change_msg(job)), delay_seconds=1)
 
         return json.dumps({"job": job.to_dict()})
 

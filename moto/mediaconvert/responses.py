@@ -98,6 +98,21 @@ class MediaConvertResponse(BaseResponse):
                             "s3://mediaconvert-processed-content/sample.m3u8"
                         ],
                         "type": "HLS_GROUP"
+                    },
+                    {
+                        "outputDetails": [
+                            {
+                                "outputFilePaths": [
+                                    "s3://mediaconvert-processed-content/sample-cover.0000001.jpeg"
+                                ],
+                                "durationInMs": 666,
+                                "videoDetails": {
+                                    "widthInPx": 1080,
+                                    "heightInPx": 1920
+                                }
+                            }
+                        ],
+                        "type": "FILE_GROUP"
                     }
                 ]
             }
